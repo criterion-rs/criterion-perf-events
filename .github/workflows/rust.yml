@@ -1,0 +1,20 @@
+name: Rust
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build
+      run: cargo build --verbose
+    - uses: icepuma/rust-action@master
+      with:
+        args: cd integration-test && cargo fmt -- --check && cargo clippy -- -Dwarnings && cargo test
