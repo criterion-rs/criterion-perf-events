@@ -7,14 +7,48 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
-
+  ci:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        rust:
+#          - stable
+#          - beta
+          - nightly
+#          - 1.31.0  # MSRV
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Build
-      run: cargo build --verbose
-    - uses: icepuma/rust-action@master
-      with:
-        args: cd integration-test && cargo fmt -- --check && cargo clippy -- -Dwarnings && cargo test
+      - uses: actions/checkout@v2
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: ${{ matrix.rust }}
+          override: true
+          components: rustfmt, clippy
+
+      - uses: actions-rs/cargo@v1
+        with:
+          command: build
+
+      - uses: actions-rs/cargo@v1
+        with:
+          command: test
+
+      - uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: --all -- --check
+
+      - uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+          args: -- -D warnings
+
+  security_audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions-rs/audit-check@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
