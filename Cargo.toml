@@ -12,4 +12,4 @@ exclude = [".gitignore", ".vscode/*", ".github/*"]
 
 [dependencies]
 criterion = "0.3.2"
-perfcnt = "0.5.1"
+perfcnt = "0.6.0"
