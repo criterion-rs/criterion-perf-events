@@ -11,37 +11,53 @@ Criterion-perf-events uses the [`perfcnt`](https://gz.github.io/rust-perfcnt/per
 * [Perf events](https://gz.github.io/rust-perfcnt/perfcnt/linux/enum.Event.html)
 * [Raw Intel events](https://gz.github.io/rust-perfcnt/x86/perfcnt/intel/description/struct.IntelPerformanceCounterDescription.html)
 
+## Troubleshooting
+
+If you get a "Permission denied" error, update `perf_event_paranoid`:
+```
+sudo sh -c 'echo 1 >/proc/sys/kernel/perf_event_paranoid'
+```
+
 ## Example
 
-The following code shows on how to count last level cache misses.
+The following code shows how to count retired instructions.
 
 ```rust
-extern crate criterion_perf_events;
-extern crate perfcnt;
-
-fn fibonacci_slow(_: usize) {}
-fn fibonacci_fast(_: usize) {}
-
-use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion};
+use criterion::{criterion_group, criterion_main, BenchmarkId, black_box, Criterion};
 use criterion_perf_events::Perf;
 use perfcnt::linux::HardwareEventType as Hardware;
 use perfcnt::linux::PerfCounterBuilderLinux as Builder;
 
+fn fibonacci_slow(n: usize) -> usize {
+    match n {
+        0 => 1,
+        1 => 1,
+        n => fibonacci_slow(n - 1) + fibonacci_slow(n - 2),
+    }
+}
+
 fn bench(c: &mut Criterion<Perf>) {
     let mut group = c.benchmark_group("fibonacci");
 
-    for i in 0..20 {
-        group.bench_function(BenchmarkId::new("slow", i), |b| b.iter(|| fibonacci_slow(i)));
-        group.bench_function(BenchmarkId::new("fast", i), |b| b.iter(|| fibonacci_fast(i)));
-    }
+    let fibo_arg = 30;
+    group.bench_function(BenchmarkId::new("slow", fibo_arg), |b| {
+        b.iter(|| fibonacci_slow(black_box(fibo_arg)))
+    });
 
     group.finish()
 }
 
 criterion_group!(
-    name = my_bench;
-    config = Criterion::default().with_measurement(Perf::new(Builder::from_hardware_event(Hardware::CacheMisses)));
+    name = instructions_bench;
+    config = Criterion::default().with_measurement(Perf::new(Builder::from_hardware_event(Hardware::Instructions)));
     targets = bench
 );
-criterion_main!(my_bench);
+criterion_main!(instructions_bench);
 ```
+
+run with:
+```
+cargo criterion --message-format json
+```
+`mean` and `change.mean` are probably the most important fields in the json output.
+Your `report_directory`(see json output) contains more detailed data in cbor files, you can use [remarshal](https://github.com/dbohdan/remarshal) to convert cbor files to a human readable format.
