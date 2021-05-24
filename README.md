@@ -60,5 +60,6 @@ run with:
 ```
 cargo criterion
 ```
+Open `target/criterion/reports/index.html` to view detailed results with plots.
 For all event types (`Hardware::Instructions`, `Hardware::CacheMisses`...) criterion will always report cycles as the unit.
 Note that your event type is what is being shown, not CPU cycles.
