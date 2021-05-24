@@ -60,5 +60,5 @@ run with:
 ```
 cargo criterion
 ```
-For all event types (Hardware::Instructions, Hardware::CacheMisses...) criterion will always report cycles as the unit.
+For all event types (`Hardware::Instructions`, `Hardware::CacheMisses`...) criterion will always report cycles as the unit.
 Note that your event type is what is being shown, not CPU cycles.
