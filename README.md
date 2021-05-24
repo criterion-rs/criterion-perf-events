@@ -17,6 +17,7 @@ If you get a "Permission denied" error, update `perf_event_paranoid`:
 ```
 sudo sh -c 'echo 1 >/proc/sys/kernel/perf_event_paranoid'
 ```
+For further details please take a look at the following [link](https://superuser.com/questions/980632/run-perf-without-root-rights).
 
 ## Example
 
@@ -57,7 +58,7 @@ criterion_main!(instructions_bench);
 
 run with:
 ```
-cargo criterion --message-format json
+cargo criterion
 ```
-`mean` and `change.mean` are probably the most important fields in the json output.
-Your `report_directory`(see json output) contains more detailed data in cbor files, you can use [remarshal](https://github.com/dbohdan/remarshal) to convert cbor files to a human readable format.
+For all event types (Hardware::Instructions, Hardware::CacheMisses...) criterion will always report cycles as the unit.
+Note that your event type is what is being shown, not CPU cycles.
