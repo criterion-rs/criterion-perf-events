@@ -12,7 +12,7 @@ exclude = [".gitignore", ".vscode/*", ".github/*"]
 
 [dependencies]
 criterion = "0.3.4"
-perfcnt = "0.7.0"
+perfcnt = "0.7.2"
 
 [[bench]]
 path = "examples/fibo_bench.rs"
