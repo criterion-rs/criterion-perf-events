@@ -130,6 +130,7 @@ impl ValueFormatter for PerfFormatter {
     fn format_throughput(&self, throughput: &Throughput, value: f64) -> String {
         match throughput {
             Throughput::Bytes(b) => format!("{:.4} events/byte", value / *b as f64),
+            Throughput::BytesDecimal(b) => format!("{:.4} events/kilobyte", value / *b as f64),
             Throughput::Elements(b) => format!("{:.4} events/element", value / *b as f64),
         }
     }
@@ -150,6 +151,12 @@ impl ValueFormatter for PerfFormatter {
                     *val /= *n as f64;
                 }
                 "events/byte"
+            }
+            Throughput::BytesDecimal(n) => {
+                for val in values {
+                    *val /= *n as f64;
+                }
+                "events/kilobyte"
             }
             Throughput::Elements(n) => {
                 for val in values {
