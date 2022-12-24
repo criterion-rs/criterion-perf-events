@@ -124,7 +124,7 @@ struct PerfFormatter;
 
 impl ValueFormatter for PerfFormatter {
     fn format_value(&self, value: f64) -> String {
-        format!("{:.4} cycles", value)
+        format!("{value:.4} cycles")
     }
 
     fn format_throughput(&self, throughput: &Throughput, value: f64) -> String {
