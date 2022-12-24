@@ -1,6 +1,6 @@
 [package]
 name = "criterion-perf-events"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Jens Breitbart <jbreitbart@gmail.com>"]
 edition = "2018"
 description = "Measure perf events for criterion"
