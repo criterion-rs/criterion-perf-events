@@ -7,6 +7,7 @@ description = "Measure perf events for criterion"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/jbreitbart/criterion-perf-events"
 readme = "README.md"
+rust-version = "1.64"
 
 exclude = [".gitignore", ".vscode/*", ".github/*"]
 
