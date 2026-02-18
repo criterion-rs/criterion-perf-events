@@ -1,18 +1,18 @@
 [package]
 name = "criterion-perf-events"
-version = "0.4.0"
+version = "0.5.0"
 authors = ["Jens Breitbart <jbreitbart@gmail.com>"]
-edition = "2018"
+edition = "2021"
 description = "Measure perf events for criterion"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/jbreitbart/criterion-perf-events"
 readme = "README.md"
-rust-version = "1.64"
+rust-version = "1.86"
 
 exclude = [".gitignore", ".vscode/*", ".github/*"]
 
 [dependencies]
-criterion = "0.5.0"
+criterion = "0.8"
 perfcnt = "0.8.0"
 
 [[bench]]

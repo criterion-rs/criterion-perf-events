@@ -3,9 +3,6 @@
 //! # Example
 //!
 //! ```rust
-//! extern crate criterion_perf_events;
-//! extern crate perfcnt;
-//!
 //! # fn fibonacci_slow(_: usize) {}
 //! # fn fibonacci_fast(_: usize) {}
 //!
@@ -32,8 +29,6 @@
 //! );
 //! criterion_main!(my_bench);
 //! ```
-
-extern crate perfcnt;
 
 use criterion::{
     measurement::{Measurement, ValueFormatter},
@@ -145,7 +140,11 @@ impl ValueFormatter for PerfFormatter {
 
                 format!("{:.4} {}", event_per_byte / denominator, unit)
             }
-            Throughput::Elements(bytes) => format!("{:.4} events/element", value / *bytes as f64),
+            Throughput::Elements(elems) => format!("{:.4} events/element", value / *elems as f64),
+            Throughput::Bits(bits) => format!("{:.4} events/bit", value / *bits as f64),
+            Throughput::ElementsAndBytes { elements, .. } => {
+                format!("{:.4} events/element", value / *elements as f64)
+            }
         }
     }
 
@@ -185,9 +184,21 @@ impl ValueFormatter for PerfFormatter {
 
                 unit
             }
-            Throughput::Elements(bytes) => {
+            Throughput::Elements(elems) => {
                 for val in values {
-                    *val /= *bytes as f64;
+                    *val /= *elems as f64;
+                }
+                "events/element"
+            }
+            Throughput::Bits(bits) => {
+                for val in values {
+                    *val /= *bits as f64;
+                }
+                "events/bit"
+            }
+            Throughput::ElementsAndBytes { elements, .. } => {
+                for val in values {
+                    *val /= *elements as f64;
                 }
                 "events/element"
             }
